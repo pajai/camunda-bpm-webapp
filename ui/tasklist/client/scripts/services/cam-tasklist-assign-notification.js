@@ -15,6 +15,19 @@
         return;
       }
       Task.list(params, function(err, data) {
+        /*
+         * A single task assigned to the same user -> show it automagically
+         */
+        if(data._embedded.task.length === 1) {
+          var t = data._embedded.task[0];
+
+          location.href = '#/?task='+ t.id;
+
+          var el = document.querySelector('[cam-tasks] .tasks-list .task [href*="#/?task=' + t.id + '"]');
+          if(el) {
+            el.focus();
+          }
+        }
         if(data._embedded.task.length > 0) {
           var msg = '';
           for(var task, i = 0; (task = data._embedded.task[i]); i++) {
