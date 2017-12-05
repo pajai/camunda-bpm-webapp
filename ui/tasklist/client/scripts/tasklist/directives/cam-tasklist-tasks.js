@@ -36,7 +36,7 @@ module.exports = [function() {
         function updateSilently(params) {
           search.updateSilently(params);
         }
-        
+
         $scope.expanded = {};
         $scope.toggle = function(delta, $event) {
           $scope.expanded[delta] = !$scope.expanded[delta];
@@ -162,6 +162,16 @@ module.exports = [function() {
         }]);
 
         $scope.focus = function($event, task) {
+          // $scope is root scope
+          //
+          // pseudo code
+          // 1. set task id to root scope currentTaskId
+          // 2. var tasksData = $scope.tasklistData.newChild($scope);
+          //    tasksData.set('taskId', {'taskId': taskId})
+          // 3. update $location.search() with a task param (with task id)
+          // 4. updateSilently?
+          // 5. document query selector + focus
+
           if ($event) {
             $event.preventDefault();
           }
