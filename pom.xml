@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.camunda.bpm</groupId>
     <artifactId>camunda-database-settings</artifactId>
-    <version>7.8.0-SNAPSHOT</version>
+    <version>7.8.1-SNAPSHOT</version>
     <relativePath>../camunda-bpm-platform/database</relativePath>
   </parent>
 
@@ -36,6 +36,7 @@
     <authorizationCheckRevokes>auto</authorizationCheckRevokes>
 
     <resteasy.version>3.0.24.Final</resteasy.version>
+    <jdbcBatchProcessing>true</jdbcBatchProcessing>
   </properties>
 
   <dependencyManagement>
@@ -987,6 +988,13 @@
       <id>cfghistorynone</id>
       <properties>
         <history.level>none</history.level>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>cfgJdbcBatchProcessingOff</id>
+      <properties>
+        <jdbcBatchProcessing>false</jdbcBatchProcessing>
       </properties>
     </profile>
 

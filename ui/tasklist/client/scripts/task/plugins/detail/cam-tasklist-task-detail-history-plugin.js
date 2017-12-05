@@ -86,16 +86,8 @@ var Controller = [
         return deferred.resolve(null);
       }
 
-      Task.comments(task.id, function(err, res) {
-        if(err) {
-          deferred.reject(err);
-        }
-        else {
-          deferred.resolve(res);
-        }
-      });
-
-      return deferred.promise;
+      return Task.comments(task.id)
+        .catch(function() {});
     }]);
 
     historyData.provide('orderedHistoryAndCommentsByDay', ['history', 'comments', function(history, comments) {

@@ -29,19 +29,32 @@ module.exports = [
       link : function($scope, $element, attrs, formController) {
         var container = $($element[0]).find('.form-container');
         var camForm = null;
+        var initialVariables = null;
         var form = $scope.form = {
           '$valid': false,
           '$invalid': true
         };
 
-        $scope.$watch('asynchronousFormKey', function(formInfo) {
+        function clearVariableManager() {
+          var variables = camForm.variableManager.variables;
+          for (var v in variables) {
+            camForm.variableManager.destroyVariable(v);
+          }
+          // reset initial form variables
+          camForm.variableManager.variables = initialVariables;
+        }
+
+        function handleAsynchronousFormKey(formInfo) {
+          // asynchronousFormKey = formInfo;
           if (formInfo && formInfo.loaded) {
             showForm(container, formInfo, formController.getParams());
           }
           if (formInfo && formInfo.failure) {
             formController.notifyFormInitializationFailed(formInfo.error);
           }
-        }, true);
+        }
+
+        $scope.$watch('asynchronousFormKey', handleAsynchronousFormKey, true);
 
         $scope.$watch(function() {
           return form && form.$valid;
@@ -75,7 +88,6 @@ module.exports = [
           });
 
           camForm = new CamForm(params);
-
         }
 
         var done = function(err, _camForm) {
@@ -83,6 +95,7 @@ module.exports = [
             return formController.notifyFormInitializationFailed(err);
           }
           camForm = _camForm;
+          initialVariables = angular.copy(camForm.variableManager.variables);
 
           var formName = _camForm.formElement.attr('name');
           var camFormScope = _camForm.formElement.scope();
@@ -113,8 +126,17 @@ module.exports = [
           }
         };
 
+        var localCallback = function(callback) {
+          return function(err, result) {
+            if(err) {
+              clearVariableManager();
+            }
+
+            return callback(err, result);
+          };
+        };
         var complete = function(callback) {
-          camForm.submit(callback);
+          camForm.submit(localCallback(callback));
         };
 
         var save = function(evt) {

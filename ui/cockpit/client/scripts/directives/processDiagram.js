@@ -110,6 +110,7 @@ var DirectiveController = [
       isElementSelectable(bpmnElements[element.businessObject.id]) &&
       (!selection || selection.indexOf(element.businessObject.id) === -1) &&
       (!selection || selection.indexOf(element.businessObject.id + '#multiInstanceBody') === -1)) {
+        $scope.control.getViewer().get('canvas').removeMarker(element.businessObject.id, 'selectable');
         $scope.control.clearHighlight(element.businessObject.id);
       }
     };
@@ -230,6 +231,7 @@ var Directive = function() {
     restrict: 'EAC',
     scope: {
       processDiagram: '=',
+      key: '@',
       processDiagramOverlay: '=',
       onElementClick: '&',
       selection: '=',
