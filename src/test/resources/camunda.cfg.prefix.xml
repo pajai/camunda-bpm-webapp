@@ -10,10 +10,15 @@
 
   <bean id="processEngineConfiguration" class="org.camunda.bpm.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration" depends-on="dbSchemaPrefixTestHelper">
 
-    <property name="jdbcUrl" value="jdbc:h2:mem:DatabaseTablePrefixTest;DB_CLOSE_DELAY=1000;MVCC=TRUE;" />
+    <property name="jdbcUrl" value="jdbc:h2:./camunda-h2-dbs/process-engine" />
     <property name="jdbcDriver" value="org.h2.Driver" />
     <property name="jdbcUsername" value="sa" />
-    <property name="jdbcPassword" value="" />
+    <property name="jdbcPassword" value="sa" />
+
+    <!--<property name="jdbcUrl" value="jdbc:h2:mem:DatabaseTablePrefixTest;DB_CLOSE_DELAY=1000;MVCC=TRUE;" />-->
+    <!--<property name="jdbcDriver" value="org.h2.Driver" />-->
+    <!--<property name="jdbcUsername" value="sa" />-->
+    <!--<property name="jdbcPassword" value="" />-->
 
     <!-- Database configurations -->
     <property name="databaseSchemaUpdate" value="NO_CHECK" />
