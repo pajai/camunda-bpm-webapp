@@ -33,28 +33,16 @@ var Controller = [
         CONFIRM_CHANGE = 'confirmChange',
         CHANGE_SUCCESS = 'changeSuccess';
 
-
-    /**
-     * Check if the json/xml field is valid
-     */
-    function isValidJsonXml() {
-      return angular.element('[name="jsonXmlForm"]').scope().jsonXmlForm.$valid;
-    }
-
     $scope.selectedTab = 'serialized';
     $scope.status = BEFORE_CHANGE;
 
     $scope.variable = variable;
-    $scope.isJsonOrXml = variable.type && ( variable.type.toLowerCase() === 'json' || variable.type.toLowerCase() === 'xml' );
     $scope.readonly = readonly;
 
     $scope.currentValue = angular.copy(variable.value);
 
     var initialDeserializedValue;
 
-    $scope.isChangeDisabled = function() {
-      return ( $scope.isJsonOrXml ? !isValidJsonXml(): $scope.status !== 'beforeChange') || !hasChanged();
-    };
 
     $scope.$on('$routeChangeStart', function() {
       $modalInstance.dismiss();
@@ -83,9 +71,10 @@ var Controller = [
 
 
     var hasChanged = $scope.hasChanged = function(type) {
-      if($scope.isJsonOrXml || isSerializedTab(type)) {
+      if(isSerializedTab(type)) {
         return variable.value !== $scope.currentValue;
-      } else {
+      }
+      else {
         return initialDeserializedValue != $scope.currentDeserializedValue;
       }
     };
@@ -95,9 +84,6 @@ var Controller = [
 
       var updateDeserialized = !isSerializedTab($scope.selectedTab);
       var newValue = updateDeserialized ? $scope.currentDeserializedValue : $scope.currentValue;
-      if($scope.isJsonOrXml) {
-        newValue = variable.value;
-      }
 
       if(variable.valueInfo.serializationDataFormat === 'application/json' || updateDeserialized) {
         try {
@@ -115,22 +101,20 @@ var Controller = [
         }
       }
 
-      !updateDeserialized ? updateValue(variable, newValue) : updateDeserializedValue(variable, newValue);
+      !updateDeserialized ? updateSerializedValue(variable, newValue) : updateDeserializedValue(variable, newValue);
 
     };
 
 
     // load deserialized value:
-    if(!$scope.isJsonOrXml) {
-      loadDeserializedValue();
-    }
+    loadDeserializedValue();
 
 
     function isSerializedTab(tab) {
       return tab === 'serialized';
     }
 
-    function updateValue(variable, newValue) {
+    function updateSerializedValue(variable, newValue) {
       var variableUpdate = {
         type: variable.type,
         value: newValue,
